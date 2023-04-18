@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!--
+    As you add to this URDF, please be aware that both the robot and
+    simulation include it. You must retain compatibility with all of
+    the following launch files:
+
+    jackal_viz/launch/view_model.launch
+    jackal_gazebo/launch/jackal_world.launch
+    jackal_base/launch/base.launch
+  -->
+    <xacro:include filename="$(find realsense_ros_gazebo)/xacro/tracker.xacro" />
+    <xacro:realsense_T265 sensor_name="t265" parent_link="base_link" rate="100.0">
+        <origin rpy="0 0 0" xyz="0.25 0 0.15" />
+    </xacro:realsense_T265>
+    <link name="rplidar_link">
+        <visual name="rplidar_visual">
+            <pose>0 0 0 0 0 0</pose>
+            <geometry name="rplidar_geom">
+                <cylinder radius="0.02775" length="0.051" />
+            </geometry>
+            <material name="rplidar_material">
+                <color rgba="0.1 0.1 0.1 1.0" />
+            </material>
+        </visual>
+    </link>
+    <gazebo reference="rplidar_link">
+        <sensor name="lidar" type="ray">
+            <pose>0.215 0 0.215 0 0 0</pose>
+            <always_on>true</always_on>
+            <visualize>false</visualize>
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>920</samples>
+                        <resolution>1</resolution>
+                        <min_angle>0.000000</min_angle>
+                        <max_angle>6.28318530718</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>40</max>
+                    <resolution>0.03</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.05</stddev>
+                </noise>
+            </ray>
+            <plugin name="scan" filename="libgazebo_ros_laser.so">
+                <topicName>laser/scan</topicName>
+                <frameName>rplidar_link</frameName>
+            </plugin>
+        </sensor>
+    </gazebo>
+    <joint name="rplidar_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="rplidar_link" />
+        <origin xyz="0 0 0.2" />
+    </joint>
+
+    <link name="fisheye_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.01 0.05 0.05" />
+            </geometry>
+            <material name="rplidar_material">
+                <color rgba="1.0 0.1 0.1 1.0" />
+            </material>
+        </visual>
+    </link>
+    <gazebo reference="fisheye_link">
+        <sensor name="fisheye" type="wideanglecamera">
+            <update_rate>10.0</update_rate>
+            <camera name="fisheye_camera">
+                <horizontal_fov>2.5</horizontal_fov>
+                <image>
+                    <width>256</width>
+                    <height>256</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>100</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>10</updateRate>
+                <cameraName>fisheye</cameraName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <frameName>fisheye_link</frameName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>-0.007419134024530649</distortionK1>
+                <distortionK2>0.041209351271390915</distortionK2>
+                <distortionK3>-0.03811917081475258</distortionK3>
+                <distortionT1>0.006366158835589886</distortionT1>
+                <distortionT2>0.0</distortionT2>
+                <CxPrime>416.00531005859375</CxPrime>
+                <Cx>16.00531005859375</Cx>
+                <Cy>403.38909912109375</Cy>
+            </plugin>
+        </sensor>
+    </gazebo>
+    <joint name="fisheye_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="fisheye_link" />
+        <origin xyz="0.25 0.1 0.15" />
+    </joint>
+</robot>

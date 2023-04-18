@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+import offroad_sensor_fusion.gps_state_estimator_node
+
+if __name__ == '__main__':
+    offroad_sensor_fusion.gps_state_estimator_node.main()

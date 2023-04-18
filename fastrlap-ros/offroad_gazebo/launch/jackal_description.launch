@@ -1,0 +1,10 @@
+<launch>
+  <arg name="config" default="base" />
+
+  <param name="robot_description"
+      command="$(find jackal_description)/scripts/env_run
+                $(find offroad_gazebo)/urdf/config/base
+                $(find xacro)/xacro $(find jackal_description)/urdf/jackal.urdf.xacro
+                --inorder" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+</launch>

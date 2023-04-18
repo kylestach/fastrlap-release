@@ -1,0 +1,97 @@
+<mujoco>
+  <compiler meshdir="../../cars/meshes" />
+  <asset>
+    <mesh name="buddy_mushr_base_nano" file="mushr_base_nano.stl"/>
+    <mesh name="buddy_mushr_wheel" file="mushr_wheel.stl"/>
+    <mesh name="buddy_mushr_ydlidar" file="mushr_ydlidar.stl"/>
+  </asset>
+  <default>
+    <default class="buddy_wheel">
+      <geom fitscale="1.2" type="ellipsoid" friction="2 0.005 0.0001" contype="1" conaffinity="1" mesh="buddy_mushr_wheel" mass="0.498952" rgba="0 0 0 0"/>
+    </default>
+    <default class="buddy_steering">
+      <joint type="hinge" axis="0 0 1" limited="true" frictionloss="0.01" damping="0.001" armature="0.0002" range="-0.38 0.38"/>
+    </default>
+    <default class="buddy_throttle">
+      <joint type="hinge" axis="0 1 0" frictionloss="0.001" damping="0.01" armature="0.01" limited="false"/>
+    </default>
+  </default>
+  <worldbody>
+    <body name="buddy" pos="0.0 0.0 0.0" euler="0 0 0.0">
+      <camera name="buddy_third_person" mode="fixed" pos="-1 0 1" xyaxes="0 -1 0 0.707 0 0.707"/>
+
+      <camera name="buddy_realsense_d435i" mode="fixed" pos="-0.005 0 .165" euler="0 4.712 4.712"/>
+      <site name="buddy_imu" pos="-0.005 0 .165"/>
+
+      <camera name="overhead_track" mode="track" pos="0 0 9" euler="0 0 0"/>
+
+
+      <geom pos="0 0 0.094655" contype="0" conaffinity="0" type="mesh" mass="3.542137" mesh="buddy_mushr_base_nano"/>
+      <geom name="buddy_realsense_d435i" contype="0" conaffinity="0" size="0.012525 0.045 0.0125" pos="0.0123949 0 0.162178" mass="0.072" type="box"/>
+      <geom name="buddy_ydlidar" contype="0" conaffinity="0" pos="-0.035325 0 0.202405" type="mesh" mass="0.180" mesh="buddy_mushr_ydlidar"/>
+
+      <geom name="buddy_pusher_connector" contype="0" conaffinity="0" pos="0.2073 0 0.063" type="box" size="0.0025 0.025 0.02" mass="0.01" />
+      <!-- x=1cm, y=22cm, z=7cm -->
+      <geom name="buddy_pusher" contype="0" conaffinity="0" pos="0.215 0 0.048" type="box" size=".005 .11 .035" mass="0.05"/>
+
+      <body name="buddy_steering_wheel" pos="0.1385 0 0.0488">
+        <joint class="buddy_steering" name="buddy_steering_wheel"/>
+        <geom class="buddy_wheel" contype="0" conaffinity="0" mass="0.01" rgba="0 0 0 1.0"/>
+      </body>
+
+      <body name="buddy_wheel_fl" pos="0.1385 0.115 0.0488">
+        <joint class="buddy_steering" name="buddy_wheel_fl_steering"/>
+        <joint class="buddy_throttle" name="buddy_wheel_fl_throttle"/>
+        <geom class="buddy_wheel"/>
+        <geom class="buddy_wheel" type="mesh" contype="0" conaffinity="0" group="1" rgba="1 1 1 1"/>
+      </body>
+      <body name="buddy_wheel_fr" pos="0.1385 -0.115 0.0488">
+        <joint class="buddy_steering" name="buddy_wheel_fr_steering"/>
+        <joint class="buddy_throttle" name="buddy_wheel_fr_throttle"/>
+        <geom class="buddy_wheel"/>
+        <geom class="buddy_wheel" type="mesh" contype="0" conaffinity="0" group="1" rgba="1 1 1 1"/>
+      </body>
+      <body name="buddy_wheel_bl" pos="-0.158 0.115 0.0488">
+        <joint class="buddy_throttle" name="buddy_wheel_bl_throttle"/>
+        <geom class="buddy_wheel"/>
+        <geom class="buddy_wheel" type="mesh" contype="0" conaffinity="0" group="1" rgba="1 1 1 1"/>
+      </body>
+      <body name="buddy_wheel_br" pos="-0.158 -0.115 0.0488">
+        <joint class="buddy_throttle" name="buddy_wheel_br_throttle"/>
+        <geom class="buddy_wheel"/>
+        <geom class="buddy_wheel" type="mesh" contype="0" conaffinity="0" group="1" rgba="1 1 1 1"/>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position class="buddy_steering" kp="25.0" name="buddy_steering_pos" joint="buddy_steering_wheel" ctrllimited="true" ctrlrange="-0.38 0.38"/>
+    <velocity kv="100" gear="0.04" forcelimited="true" forcerange="-50 50" name="buddy_throttle_velocity" tendon="buddy_throttle" ctrllimited="true" ctrlrange="-1 3"/>
+  </actuator>
+  <equality>
+    <!-- taylor expansion of delta_l = arctan(L/(L/tan(delta) - W/2)) with L,W in reference to kinematic car model -->
+    <joint joint1="buddy_wheel_fl_steering" joint2="buddy_steering_wheel" polycoef="0 1 0.375 0.140625 -0.0722656"/>
+
+    <!-- taylor expansion of delta_r = arctan(L/(L/tan(delta) + W/2)) with L,W in reference to kinematic car model -->
+    <joint joint1="buddy_wheel_fr_steering" joint2="buddy_steering_wheel" polycoef="0 1 -0.375 0.140625 0.0722656"/>
+  </equality>
+  <tendon>
+    <fixed name="buddy_throttle">
+      <joint joint="buddy_wheel_fl_throttle" coef="0.25"/>
+      <joint joint="buddy_wheel_fr_throttle" coef="0.25"/>
+      <joint joint="buddy_wheel_bl_throttle" coef="0.25"/>
+      <joint joint="buddy_wheel_br_throttle" coef="0.25"/>
+    </fixed>
+  </tendon>
+  <sensor>
+    <accelerometer name="buddy_accelerometer" site="buddy_imu" />
+    <framequat name="framequat" objtype='body' objname="buddy"/>
+    <gyro name="buddy_gyro" site="buddy_imu" />
+    <velocimeter name="velocimeter" site="buddy_imu" />
+    <jointpos name="buddy_steering_pos" joint="buddy_steering_wheel"/>
+    <jointvel name="buddy_steering_vel" joint="buddy_steering_wheel"/>
+    <jointvel name="buddy_wheel_fl_vel" joint="buddy_wheel_fl_throttle"/>
+    <jointvel name="buddy_wheel_fr_vel" joint="buddy_wheel_fr_throttle"/>
+    <jointvel name="buddy_wheel_bl_vel" joint="buddy_wheel_bl_throttle"/>
+    <jointvel name="buddy_wheel_br_vel" joint="buddy_wheel_br_throttle"/>
+  </sensor>
+</mujoco>

@@ -1,0 +1,26 @@
+<launch>
+    <arg name="gps_topic" default="/ublox/fix" />
+    <arg name="gps_vel_topic" default="/ublox/fix_velocity" />
+    <arg name="wheel_odom_topic" default="/vesc/odom" />
+    <arg name="imu_topic" default="/imu/data" />
+    <arg name="odom_pub_topic" default="/odom" />
+
+    <node pkg="offroad_sensor_fusion" type="gps_state_estimator_node" name="gps_state_estimator" output="screen">
+        <remap from="gps/fix" to="$(arg gps_topic)" />
+        <remap from="gps/vel" to="$(arg gps_vel_topic)" />
+        <remap from="wheel_odom" to="$(arg wheel_odom_topic)" />
+        <remap from="imu/data" to="$(arg imu_topic)" />
+        <remap from="odom" to="$(arg odom_pub_topic)" />
+    </node>
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_utm" args="-564649.74 -4191966.66 0 0 0 0 map utm 10" /> -->
+
+    <!-- RFS bathroom -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_utm" args="-558493.89 -4196584.69 0 0 0 0 map utm 10" /> -->
+    <!-- RFS woodchipper -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_utm" args="-558810.19 -4196925.93 0 0 0 0 map utm 10" /> -->
+    <!-- 4.0 hill -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_utm" args="-565396.66 -4191790.60 0 0 0 0 map utm 10" /> -->
+    <!-- Hertz Music -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_utm" args="-565448.64 -4191724.22 0 0 0 0 map utm 10" />
+</launch>

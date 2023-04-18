@@ -1,0 +1,21 @@
+<launch>
+    <arg name="gui" default="true" />
+
+    <include file="$(find offroad_learning)/launch/inference.launch">
+        <arg name="param_topic" value="/offroad_learning/params" />
+        <arg name="rb_topic" value="/offroad_learning/rb_data" />
+        <arg name="ackermann" value="false" />
+    </include>
+    <include file="$(find offroad_learning)/launch/training.launch">
+        <arg name="param_topic" value="/offroad_learning/params" />
+        <arg name="rb_topic" value="/offroad_learning/rb_data" />
+    </include>
+    <include file="$(find offroad_gazebo)/launch/jackal_autorally_track.launch">
+        <!-- <arg name="use_sim_time" value="true" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="headless" value="$(eval not arg('gui'))" /> -->
+    </include>
+    <node pkg="offroad_learning" type="goal_graph_node" name="goal_graph">
+        <param name="~goal_topic" type="string" value="/offroad_learning/goal" />
+    </node>
+</launch>

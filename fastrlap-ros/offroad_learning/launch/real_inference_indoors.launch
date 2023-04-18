@@ -1,0 +1,50 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="racecar_version" default="racecar-v2" />
+  <arg name="use_pixels" default="false" />
+  <arg name="use_pixel_embeddings" default="true" />
+
+  <group ns="vesc">
+    <!-- joystick node -->
+    <include file="$(find racecar)/launch/includes/common/joy_teleop.launch.xml" >
+      <arg name="racecar_version" value="$(arg racecar_version)" />
+    </include>
+
+    <!-- Spawn MUXs -->
+    <include file="$(find racecar)/launch/mux.launch" />
+
+    <!-- start electronic speed controller driver -->
+    <include file="$(find racecar)/launch/includes/$(arg racecar_version)/vesc.launch.xml" >
+      <arg name="racecar_version" value="$(arg racecar_version)" />
+    </include>
+  </group>
+
+  <!-- start imu and laser scanner -->
+  <include file="$(find racecar)/launch/includes/common/sensors_indoor.launch.xml" >
+    <arg name="racecar_version" value="$(arg racecar_version)" />
+  </include>
+
+  <!-- static transforms, e.g. base_link to imu -->
+  <include file="$(find racecar)/launch/includes/$(arg racecar_version)/static_transforms_indoor.launch.xml" />
+
+  <include file="$(find offroad_learning)/launch/inference.launch">
+    <arg name="image_topic" value="/camera/image_raw" />
+    <arg name="imu_topic" value="" />
+    <arg name="accel_topic" value="/realsense_tracker/accel/sample" />
+    <arg name="gyro_topic" value="/realsense_tracker/gyro/sample" />
+    <arg name="odom_topic" value="/realsense_tracker/odom/sample" />
+    <arg name="action_topic" value="/vesc/high_level/ackermann_cmd_mux/input/nav_0" />
+    <arg name="teleop_command" value="/vesc/low_level/ackermann_cmd_mux/input/teleop" />
+    <arg name="teleop_record_command" value="/offroad_learning/teleop_record_command" />
+    <arg name="mode_topic" value="/offroad_learning/mode" />
+    <arg name="ackermann" value="true" />
+    <arg name="fixed_frame" value="map" />
+    <arg name="sim" value="false" />
+    <arg name="use_pixels" value="$(arg use_pixels)" />
+    <arg name="use_pixel_embeddings" value="$(arg use_pixel_embeddings)" />
+  </include>
+
+  <node pkg="offroad_learning" type="goal_graph_recorder_node" name="goal_graph_recorder">
+    <param name="fixed_frame" value="map" />
+  </node>
+</launch>

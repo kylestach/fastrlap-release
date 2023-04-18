@@ -1,0 +1,11 @@
+<launch>
+    <arg name="gui" default="true" />
+
+    <!-- <include file="$(find cpr_inspection_gazebo)/launch/inspection_world.launch">
+        <arg name="platform" value="jackal" />
+    </include> -->
+    <include file="$(find gazebo_race_modules)/launch/test_large_track.launch" />
+    <node pkg="offroad_learning" type="goal_graph_recorder_node" name="goal_graph_recorder">
+        <param name="~fixed_frame" value="map" />
+    </node>
+</launch>

@@ -1,0 +1,10 @@
+black
+coverage
+codecov
+codespell
+darglint
+isort
+pytest
+pytest-cov
+pytest-xdist
+pytype

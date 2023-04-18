@@ -1,0 +1,35 @@
+<launch>
+  <arg name="x" default="0" />
+  <arg name="y" default="0" />
+  <arg name="z" default="1" />
+  <arg name="yaw" default="0" />
+  <arg name="joystick" default="true" />
+  <arg name="racecar_version" default="racecar-v2" />
+
+  <!-- Configuration of Jackal which you would like to simulate.
+       See jackal_description for details. -->
+  <arg name="config" default="base" />
+
+  <!-- Load Jackal's description, controllers, and teleop nodes. -->
+  <include file="$(find offroad_gazebo)/launch/jackal_description.launch">
+    <arg name="config" value="$(arg config)" />
+  </include>
+  <include file="$(find jackal_control)/launch/control.launch">
+    <arg name="enable_ekf" value="false" />
+  </include>
+  <include file="$(find offroad_sensor_fusion)/launch/state_estimator.launch">
+    <arg name="t265_topic" value="/t265/odom/sample" />
+    <arg name="gps_topic" value="/navsat/fix" />
+  </include>
+  <include file="$(find jackal_control)/launch/teleop.launch">
+    <arg name="joystick" value="false" />
+  </include>
+  <include file="$(find racecar)/launch/includes/common/joy_teleop.launch.xml">
+    <arg name="racecar_version" value="$(arg racecar_version)" />
+    <arg name="joy_teleop_config" value="$(find racecar)/config/$(arg racecar_version)/teleop_jackal.yaml" />
+  </include>
+
+  <!-- Spawn Jackal -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+	      args="-urdf -model jackal -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R 0 -P 0 -Y $(arg yaw)" />
+</launch>

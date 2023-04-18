@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>offroad_learning</name>
+  <version>0.0.0</version>
+  <description>The offroad_learning package</description>
+
+  <maintainer email="kstachowicz@berkeley.edu">Kyle Stachowicz</maintainer>
+  <author email="kstachowicz@berkeley.edu">Kyle Stachowicz</author>
+  <license>BSD</license>
+
+  <depend>rospy</depend>
+  <depend>offroad_gazebo</depend>
+  <depend>offroad_sensor_fusion</depend>
+  <depend>tensor_dict_convert</depend>
+  <depend>tensor_dict_msgs</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

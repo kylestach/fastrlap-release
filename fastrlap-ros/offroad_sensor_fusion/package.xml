@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>offroad_sensor_fusion</name>
+  <version>0.0.0</version>
+  <description>The offroad_sensor_fusion package</description>
+
+  <maintainer email="kstachowicz@berkeley.edu">Kyle Stachowicz</maintainer>
+  <author email="kstachowicz@berkeley.edu">Kyle Stachowicz</author>
+  <license>BSD</license>
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

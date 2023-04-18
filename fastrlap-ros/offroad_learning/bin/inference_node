@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+import offroad_learning.inference
+from absl import app
+
+if __name__ == '__main__':
+    app.run(offroad_learning.inference.main)

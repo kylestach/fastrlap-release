@@ -1,0 +1,48 @@
+<launch>
+    <env name="CUDA_VISIBLE_DEVICES" value="-1" />
+
+    <arg name="param_topic" default="/offroad_learning/params" />
+    <arg name="rb_topic" default="/offroad_learning/rb_data" />
+    <arg name="image_topic" default="/fisheye/image_raw" />
+    <arg name="imu_topic" default="" />
+    <arg name="gyro_topic" default="" />
+    <arg name="accel_topic" default="" />
+    <arg name="odom_topic" default="/t265/odom/sample" />
+    <arg name="goal_topic" default="/offroad_learning/goal" />
+    <arg name="action_topic" default="/cmd_vel" />
+    <arg name="ackermann" default="false" />
+    <arg name="teleop_command" default="/joy_teleop/cmd_vel" />
+    <arg name="teleop_record_command" default="/offroad_learning/teleop_record_command" />
+    <arg name="mode_topic" default="/offroad_learning/mode" />
+    <arg name="fixed_frame" default="map" />
+
+    <arg name="sim" default="true" />
+    <arg name="use_pixels" default="false" />
+    <arg name="use_pixel_embeddings" default="true" />
+    <arg name="num_stack" default="3" />
+
+    <node pkg="offroad_learning" type="inference_node" name="inference" output="screen">
+        <env name="XLA_PYTHON_CLIENT_MEM_FRACTION" value="0.1" />
+        <env name="LD_LIBRARY_PATH" value="$(env LD_LIBRARY_PATH):$(env HOME)/anaconda3/lib" />
+        <param name="~param_topic" type="string" value="$(arg param_topic)" />
+        <param name="~rb_topic" type="string" value="$(arg rb_topic)" />
+        <param name="~image_topic" type="string" value="$(arg image_topic)" />
+        <param name="~imu_topic" type="string" value="$(arg imu_topic)" />
+        <param name="~gyro_topic" type="string" value="$(arg gyro_topic)" />
+        <param name="~accel_topic" type="string" value="$(arg accel_topic)" />
+        <param name="~odom_topic" type="string" value="$(arg odom_topic)" />
+        <param name="~goal_topic" type="string" value="$(arg goal_topic)" />
+        <param name="~action_topic" type="string" value="$(arg action_topic)" />
+        <param name="~ackermann" type="bool" value="$(arg ackermann)" />
+        <param name="~teleop_command" type="string" value="$(arg teleop_command)" />
+        <param name="~teleop_record_command" type="string" value="$(arg teleop_record_command)" />
+        <param name="~mode_topic" type="string" value="$(arg mode_topic)" />
+        <param name="~fixed_frame" type="string" value="$(arg fixed_frame)" />
+
+        <param name="~sim" type="bool" value="$(arg sim)" />
+        <param name="~use_pixels" type="bool" value="$(arg use_pixels)" />
+        <param name="~use_pixel_embeddings" type="bool" value="$(arg use_pixel_embeddings)" />
+
+        <param name="~encoder_checkpoint" type="string" value="/home/racecar/pretrained_models/iql_racecar_convnet" />
+    </node>
+</launch>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tensor_dict_convert</name>
+  <version>0.0.0</version>
+  <description>The tensor_dict_convert package</description>
+
+  <maintainer email="kstachowicz@berkeley.edu">Kyle Stachowicz</maintainer>
+  <author email="kstachowicz@berkeley.edu">Kyle Stachowicz</author>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>tensor_dict_msgs</depend>
+  <depend>rospy</depend>
+</package>

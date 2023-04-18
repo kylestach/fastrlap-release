@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+import offroad_learning.record_goal_graph
+
+if __name__ == '__main__':
+    offroad_learning.record_goal_graph.main()
